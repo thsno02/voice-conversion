@@ -1,4 +1,4 @@
-import yaml, os
+import yaml
 from munch import Munch
 import torch
 import librosa
@@ -48,23 +48,13 @@ def build_model(model_params={}):
 def compute_style(speaker_dicts):
     reference_embeddings = {}
     for key, (path, speaker) in speaker_dicts.items():
-        if path == "":
-            # @lw: speaker = idx of the speaker name
-            label = torch.LongTensor([key]).to('cuda')
-            latent_dim = starganv2.mapping_network.shared[0].in_features
-            # @lw: get the reference embedding from the mapping network
-            ref = starganv2.mapping_network(
-                torch.randn(1, latent_dim).to('cuda'), label)
-        else:
-            wave, sr = librosa.load(path, sr=24000)
-            audio, index = librosa.effects.trim(wave, top_db=30)
-            if sr != 24000:
-                wave = librosa.resample(wave, sr, 24000)
-            mel_tensor = preprocess(wave).to('cuda')
-
-            with torch.no_grad():
-                label = torch.LongTensor([key])
-                ref = starganv2.style_encoder(mel_tensor.unsqueeze(1), label)
+        # @lw: only use mapping network
+        # @lw: speaker = idx of the speaker name
+        label = torch.LongTensor([key]).to('cuda')
+        latent_dim = starganv2.mapping_network.shared[0].in_features
+        # @lw: get the reference embedding from the mapping network
+        ref = starganv2.mapping_network(
+            torch.randn(1, latent_dim).to('cuda'), label)
         reference_embeddings[key] = (ref, label)
 
     return reference_embeddings
