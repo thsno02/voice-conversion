@@ -1,5 +1,6 @@
 # !/usr/bin/env python
 
+from time import sleep
 from flask import Flask
 from flask_cors import CORS
 from flask import request
@@ -10,10 +11,15 @@ CORS(app)
 @app.route("/api/", methods=["GET"])
 def hello_world():
   action = request.args.get("action")
+  # speaker = request.form.get("speaker")
+  # print("speaker is "+speaker)
+
   if action == "start":
     # 开启接收语音
     # pass
     speaker = request.args.get("speaker")
+    print("speaker is "+speaker)
+    sleep(1)
     
     return {"status":0,"message":"success!"}
   elif action == "stop":
