@@ -1,8 +1,10 @@
+#!/usr/bin/env python3
+
 import yaml
 from munch import Munch
 import torch
-import librosa
 import torchaudio
+import time
 
 from Models.JDC.model import JDCNet
 from .models import Generator, MappingNetwork, StyleEncoder
@@ -15,7 +17,9 @@ to_mel = torchaudio.transforms.MelSpectrogram(n_mels=80,
                                               hop_length=300)
 mean, std = -4, 4
 
-
+def get_time_dif(start_time):
+    end_time = time.time()
+    return round(end_time - start_time, 3)
 
 def preprocess(wave):
     wave_tensor = torch.from_numpy(wave).float()
@@ -98,7 +102,7 @@ def load_starganv2(gan_path='../Models/StarGAN/epoch_00248.pth'):
 
     assert torch.cuda.is_available(), "CUDA is unavailable."
 
-    with open('../Models/StarGAN/epoch_00248.pth') as f:
+    with open('../Models/StarGAN/config.yml') as f:
         starganv2_config = yaml.safe_load(f)
     starganv2 = build_model(model_params=starganv2_config["model_params"])
     params = torch.load(gan_path, map_location='cpu')
