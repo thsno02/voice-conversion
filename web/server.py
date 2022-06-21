@@ -4,6 +4,7 @@ from time import sleep
 from flask import Flask
 from flask_cors import CORS
 from flask import request
+from flask import render_template
 app = Flask(__name__)
 CORS(app)
 
@@ -28,6 +29,10 @@ def hello_world():
   else:
     return {"status": 1, "message": "action error!"}
 
+@app.route('/')
+def index():
+  return render_template('play.html')
+
 
 if __name__ == '__main__':
-  app.run(port=8000,debug=True)
+  app.run(host='0.0.0.0',port=8000,debug=True)

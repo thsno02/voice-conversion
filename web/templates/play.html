@@ -81,8 +81,8 @@
     <form id="formID">
         <label style="color:#50b1fb; font-weight: 500;"  for="lang">选择人员</label>
         <select name="speaker" id="speakerID">
-            <option value="华春莹">华春莹</option>
-            <option value="石柱国">石柱国</option>
+            <option value="1">华春莹</option>
+            <option value="2">石柱国</option>
         </select>
         <!-- <input type="submit" value="Submit" />  -->
     </form>
@@ -112,8 +112,8 @@
             $.ajax({
                 type: "GET",
                 // data:{"speaker":speaker},
-                url: "http://127.0.0.1:8000/api/?action=" + action,
-                data: { speaker: speaker },
+                url: "/api/" ,
+                data: { speaker: speaker ,action:action},
                 dataType: "json",
                 success: function (response, status) {
                     console.log(response.message)
