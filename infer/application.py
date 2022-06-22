@@ -31,7 +31,7 @@ class Application:
         # enable to detect bluetooth devices, if and only if the devices are paired
         sd._terminate()
         sd._initialize()
-        sd.reset()
+        sd.default.reset()
         # set input and output devices
         sd.default.device = 1, 5
         sd.default.samplerate = 24000  # set sample rate
