@@ -25,23 +25,70 @@
         button {
             margin: 0 12px;
             display: inline-block;
-            width: 141px;
-            height: 33px;
-            line-height: 33px;
+            width: 150px;
+            height: 50px;
+            line-height: 50px;
             font-size: 14px;
             border-radius: 3px;
-            color: #fff;
+            color: rgb(249, 249, 250);
             text-align: center;
             cursor: pointer;
             display: none;
             padding: 0;
         }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            height: 100vh;
+            background-color: #f9fafa;
+        }
+
+        input {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            width: 500px;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        select {
+            margin-bottom: 10px;
+            margin-top: 10px;
+            font-family: cursive, sans-serif;
+            outline: 0;
+            background: #50b1fb;
+            color: #fff;
+            border: 1px solid rgb(39, 231, 151);
+            padding: 4px;
+            border-radius: 9px;
+            width: 160px;
+        }
     </style>
 </head>
 
 <body>
-    <center><button class="greenbtn" id="play" onclick="state_switch()" style="display:block;margin:0,auto;">开始</button>
-    </center>
+
+    <form id="formID">
+        <label style="color:#50b1fb; font-weight: 500;"  for="lang">选择人员</label>
+        <select name="speaker" id="speakerID">
+            <option value="1">华春莹</option>
+            <option value="2">石柱国</option>
+        </select>
+        <!-- <input type="submit" value="Submit" />  -->
+    </form>
+
+    <button class="greenbtn" id="play" onclick="state_switch()" style="display:block;margin:0,auto;">开始</button>
+
 </body>
 
 <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -49,32 +96,53 @@
 
 <script type="text/javascript">
 
-
     var response = {
         message: "test!",
         status: "0"
     }
 
+
     function http_get(action) {
-        $.ajax({
-            type: "GET",
-            url: "/api/?action=" + action,
-            dataType: "json",
-            success: function (response, status) {
-                console.log(response.message)
-                console.log(response.status)
-                // state_switch(response.status)
-                if(action == "start") {
-                    if(response.status == 0) {
-                        document.getElementById('play').classList.remove("greenbtn");
-                        document.getElementById('play').classList.add("redbtn");
-                        document.getElementById('play').innerText = "结束";
-                    } else {
-                        alert("启动失败!");
-                        document.getElementById('play').innerText = "开始";
+
+        var sel = document.getElementById("speakerID");
+        speaker = sel.options[sel.selectedIndex].value;
+        console.log(speaker)
+
+        if (action == "start") {
+            $.ajax({
+                type: "GET",
+                // data:{"speaker":speaker},
+                url: "/api/" ,
+                data: { speaker: speaker ,action:action},
+                dataType: "json",
+                success: function (response, status) {
+                    console.log(response.message)
+                    console.log(response.status)
+                    // state_switch(response.status)
+                    if (action == "start") {
+                        if (response.status == 0) {
+                            document.getElementById('play').classList.remove("greenbtn");
+                            document.getElementById('play').classList.add("redbtn");
+                            document.getElementById('play').innerText = "结束";
+                        } else {
+                            alert("启动失败!");
+                            document.getElementById('play').innerText = "开始";
+                        }
                     }
-                } else if(action == "stop") {
-                    if(response.status == 0) {
+                }
+            });
+        } else if (action = "stop") {
+            $.ajax({
+                type: "GET",
+                // data:{"speaker":speaker},
+                url: "/api/" ,
+                data: {action:action},
+                dataType: "json",
+                success: function (response, status) {
+                    console.log(response.message)
+                    console.log(response.status)
+
+                    if (response.status == 0) {
                         document.getElementById('play').classList.remove("redbtn");
                         document.getElementById('play').classList.add("greenbtn");
                         document.getElementById('play').innerText = "开始";
@@ -82,17 +150,15 @@
                         alert("结束失败!");
                         document.getElementById('play').innerText = "结束";
                     }
-                }
-                
-            }
-        });
-    }
 
-    function sleep(status, callback) {
-        setTimeout(callback, ms);
+                }
+            });
+        }
+
     }
 
     function state_switch() {
+
         var curText = document.getElementById('play').innerText;
         if (curText == "开始") {
             document.getElementById('play').innerText = "开始中...";
