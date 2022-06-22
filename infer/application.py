@@ -107,7 +107,7 @@ if __name__ == '__main__':
     app = Application()
     app.ini_sd()
     app.speaker = 1 # Hua_Chunying
-    app.verify_speaker()
+    app.verify_speaker(app.speaker)
 
     app.start()
     app.stop()
