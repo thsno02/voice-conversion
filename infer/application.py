@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-
 import logging
+
 logging.basicConfig(filename='vc.log',
                     level=logging.INFO,
                     format="%(asctime)s - %(levelname)-8s - %(message)s",
                     datefmt='%m/%d/%Y %I:%M:%S %p')
 import ctypes
 import queue
-import time
+import sounddevice as sd
 
 import numpy as np
-import sounddevice as sd
+import time
 from multiprocessing import Process
 from multiprocessing import Queue
 from multiprocessing import Value
@@ -19,14 +19,17 @@ from threading import Thread
 from infer.utils import get_time_dif
 from infer.model import Model
 
+
 class Application:
     def __init__(self):
         self.model = Model()
         self.flag = Value(ctypes.c_bool, False)
-        self.speaker = None 
+        self.speaker = None
         self.audio = np.zeros(
-        shape=(24000, 1))  # add zero-filled buffer to promote the performance
-    
+            shape=(24000,
+                   1))  # add zero-filled buffer to promote the performance
+        # self.process_queue = Queue(10)
+
     def ini_sd(self):
         # enable to detect bluetooth devices, if and only if the devices are paired
         sd._terminate()
@@ -37,9 +40,10 @@ class Application:
         sd.default.samplerate = 24000  # set sample rate
         sd.default.channels = 1, 2  # one input channel, two output channel
         logging.info('sounddevice has been initialized.')
-        
+
     def stream(self):
         q = queue.Queue()
+
         def callback(in_data, frames, time, status):
             q.put(in_data.copy())
 
@@ -53,32 +57,37 @@ class Application:
             logging.info('Begin to record.')
 
             while self.flag.value:
-                self.audio = np.append(self.audio, q.get(), axis=0)
+                packet = q.get()
+                self.audio = np.append(self.audio, packet, axis=0)
+                logging.info(len(self.audio))
+            logging.info("input stream exit.")
 
     def start(self):
         self.flag.value = True
-        self.audio = np.zeros(
-        shape=(24000, 1))  # add zero-filled buffer to promote the performance
-        self.p = Process(target=self.stream)
+        self.audio = np.zeros(shape=(24000,
+                                     1))  # init the audio for a new start
+        self.p = Thread(target=self.stream)
         self.p.start()
         start_time = time.time()
+
         def timer_stop():
             while self.flag.value:
-                time.sleep(10)
+                time.sleep(1)
                 if time.time() - start_time > 5 * 60:
                     self.flag.value = False
                     break
-        t = Thread(target=timer_stop)
-        t.setDaemon(True)
-        t.start()
+
+        self.t = Thread(target=timer_stop)
+        self.t.setDaemon(True)
+        self.t.start()
+        logging.info('begin recording.')
 
     def stop(self):
-        print("stopping")
-        # print(id(self.flag))
-        # self.flag = False
         self.flag.value = False
+        logging.info('end recording.')
+        self.t.join()
         self.p.join()
-    
+
     def verify_speaker(self, speaker):
         # speaker is int instead of string
         if speaker not in self.model.speakers.keys():
@@ -91,6 +100,7 @@ class Application:
 
     def infer(self):
         # pre-process audio
+        logging.info(self.audio.shape, self.audio)
         self.audio = self.audio / np.max(np.abs(self.audio))
         self.audio = self.audio.flatten()  # flatten the 2D numpy array
         # convert audio to target speaker tone
@@ -106,7 +116,7 @@ class Application:
 if __name__ == '__main__':
     app = Application()
     app.ini_sd()
-    app.speaker = 1 # Hua_Chunying
+    app.speaker = 1  # Hua_Chunying
     app.verify_speaker(app.speaker)
 
     app.start()
@@ -115,7 +125,4 @@ if __name__ == '__main__':
     app.stop()
     print('结束录音')
 
-
     app.infer()
-
-    
