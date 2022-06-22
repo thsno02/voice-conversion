@@ -11,6 +11,7 @@ from parallel_wavegan.utils import load_model  # load vocoder
 
 from infer.Models.JDC.model import JDCNet
 from infer.models import Generator, MappingNetwork, StyleEncoder
+from infer.model import Model
 
 to_mel = torchaudio.transforms.MelSpectrogram(n_mels=80,
                                               n_fft=2048,
@@ -58,9 +59,9 @@ def compute_style(speaker_dicts):
         # @lw: only use mapping network
         # @lw: speaker = idx of the speaker name
         label = torch.LongTensor([key]).to('cuda')
-        latent_dim = starganv2.mapping_network.shared[0].in_features
+        latent_dim = model.starganv2.mapping_network.shared[0].in_features
         # @lw: get the reference embedding from the mapping network
-        ref = starganv2.mapping_network(
+        ref = model.starganv2.mapping_network(
             torch.randn(1, latent_dim).to('cuda'), label)
         reference_embeddings[key] = (ref, label)
 
@@ -146,3 +147,5 @@ speakers = {
     8: 'Wang_Kun',
     9: 'Zhao_Lijian'
 }
+
+model = Model()
