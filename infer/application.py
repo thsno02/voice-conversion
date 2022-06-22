@@ -110,7 +110,11 @@ if __name__ == '__main__':
     app.verify_speaker(app.speaker)
 
     app.start()
+    print('开始录音')
+    time.sleep(10)
     app.stop()
+    print('结束录音')
+
 
     app.infer()
 
