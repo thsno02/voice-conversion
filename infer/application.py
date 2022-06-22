@@ -1,20 +1,23 @@
 #!/usr/bin/env python3
 
-import sounddevice as sd
-from .model import Model
-import numpy as np
-import time
-from multiprocessing import *
-from threading import Thread
-import ctypes
-import queue
 import logging
-from .utils import get_time_dif
-
 logging.basicConfig(filename='vc.log',
-                    level=logging.DEBUG,
+                    level=logging.INFO,
                     format="%(asctime)s - %(levelname)-8s - %(message)s",
                     datefmt='%m/%d/%Y %I:%M:%S %p')
+import ctypes
+import queue
+import time
+
+import numpy as np
+import sounddevice as sd
+from multiprocessing import Process
+from multiprocessing import Queue
+from multiprocessing import Value
+from threading import Thread
+
+from infer.utils import get_time_dif
+from infer.model import Model
 
 class Application:
     def __init__(self):

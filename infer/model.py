@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from .utils import load_F0, load_vocoder, load_starganv2, speakers, preprocess, compute_style
+from infer.utils import load_F0, load_vocoder, load_starganv2, speakers, preprocess, compute_style
 import torch
 
 class Singleton(type):
