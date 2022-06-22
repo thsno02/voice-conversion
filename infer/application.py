@@ -22,15 +22,22 @@ from infer.model import Model
 
 class Application:
     def __init__(self):
+        """
+        initialize the application
+        """
         self.model = Model()
         self.flag = Value(ctypes.c_bool, False)
         self.speaker = None
         self.audio = np.zeros(
             shape=(24000,
                    1))  # add zero-filled buffer to promote the performance
-        # self.process_queue = Queue(10)
+        self.ini_sd()
+        logging.info('Application has been initialized.')
 
     def ini_sd(self):
+        """
+        init sounddevice
+        """
         # enable to detect bluetooth devices, if and only if the devices are paired
         sd._terminate()
         sd._initialize()
@@ -42,13 +49,14 @@ class Application:
         logging.info('sounddevice has been initialized.')
 
     def stream(self):
+        """
+        this function tends to capture the audio, which is enabled by start function and terminated by stop function
+        """
         q = queue.Queue()
 
         def callback(in_data, frames, time, status):
             q.put(in_data.copy())
-
-        # while action == 'start' :
-        # create different inputStream?
+            
         with sd.InputStream(samplerate=24000,
                             device=sd.default.device[0],
                             dtype='float32',
