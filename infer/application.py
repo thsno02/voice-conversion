@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 import logging
-
-logging.basicConfig(filename='vc.log',
-                    level=logging.INFO,
-                    format="%(asctime)s - %(levelname)-8s - %(message)s",
-                    datefmt='%m/%d/%Y %I:%M:%S %p')
 import ctypes
 import queue
 import sounddevice as sd
@@ -18,6 +13,11 @@ from threading import Thread
 
 from infer.utils import get_time_dif
 from infer.model import Model
+
+logging.basicConfig(filename='vc.log',
+                    level=logging.INFO,
+                    format="%(asctime)s - %(levelname)-8s - %(message)s",
+                    datefmt='%m/%d/%Y %I:%M:%S %p')
 
 
 class Application:
@@ -67,7 +67,6 @@ class Application:
             while self.flag.value:
                 packet = q.get()
                 self.audio = np.append(self.audio, packet, axis=0)
-                logging.info(len(self.audio))
             logging.info("input stream exit.")
 
     def start(self):
@@ -108,7 +107,7 @@ class Application:
 
     def infer(self):
         # pre-process audio
-        logging.info(self.audio.shape, self.audio)
+        logging.info(self.audio.shape)
         self.audio = self.audio / np.max(np.abs(self.audio))
         self.audio = self.audio.flatten()  # flatten the 2D numpy array
         # convert audio to target speaker tone
