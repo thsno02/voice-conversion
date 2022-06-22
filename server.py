@@ -19,10 +19,13 @@ print('模型已初始化。')
 def hello_world():
     action = request.args.get("action")
     if action == "start":
-        app.speaker = 1
+        # app.speaker = 1
         print('成功设置发音者')
-        # request.args.get("speaker")
-        app.verify_speaker(app.speaker)
+        speaker = request.args.get("speaker")
+        if app.verify_speaker(speaker):
+            app.speaker = speaker
+        else:
+            return {"status": 1, "message": "action error!"}
         print('开始录音')
         app.start()
         return {"status": 0, "message": "开始!"}
