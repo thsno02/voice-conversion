@@ -13,6 +13,7 @@ CORS(serve)
 
 app = Application()
 print('模型已初始化。')
+print(f'id is {id(app)}')
 
 
 @serve.route("/api/", methods=["GET"])
@@ -20,12 +21,14 @@ def hello_world():
     action = request.args.get("action")
     if action == "start":
         # app.speaker = 1
-        print('成功设置发音者')
-        speaker = request.args.get("speaker")
+        print('开始设置发音者')
+        speaker = int(request.args.get("speaker"))
+        print(speaker)
         if app.verify_speaker(speaker):
             app.speaker = speaker
         else:
             return {"status": 1, "message": "action error!"}
+        print('成功设置发音者')
         print('开始录音')
         app.start()
         return {"status": 0, "message": "开始!"}
