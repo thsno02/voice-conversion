@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import time
+import os
 
 import yaml
 from munch import Munch
@@ -16,6 +17,8 @@ to_mel = torchaudio.transforms.MelSpectrogram(n_mels=80,
                                               win_length=1200,
                                               hop_length=300)
 mean, std = -4, 4
+
+root_path = os.path.join(os.getcwd(), 'infer' + os.sep + 'Models')
 
 def get_time_dif(start_time):
     end_time = time.time()
@@ -64,13 +67,14 @@ def compute_style(speaker_dicts):
     return reference_embeddings
 
 
-def load_F0(f0_path="../Models/JDC/bst.t7"):
+def load_F0():
     ''' @lw
     return F0 model
     :f0_path: default path is "../Models/JDC/bst.t7"
     '''
 
     assert torch.cuda.is_available(), "CUDA is unavailable."
+    f0_path = os.path.join(root_path, 'JDC' + os.sep + 'bst.t7')
     F0_model = JDCNet(num_class=1, seq_len=192)
     params = torch.load(f0_path)['net']
     F0_model.load_state_dict(params)
@@ -80,13 +84,14 @@ def load_F0(f0_path="../Models/JDC/bst.t7"):
     return F0_model
 
 
-def load_vocoder(vocoder_path="../Models/Vocoder/checkpoint-400000steps.pkl"):
+def load_vocoder():
     '''@lw
     return vocoder model
     :vocoder_path: default path is "../Models/Vocoder/checkpoint-400000steps.pkl"
     '''
 
     assert torch.cuda.is_available(), "CUDA is unavailable."
+    vocoder_path = os.path.join(root_path, 'Vocoder' + os.sep + 'checkpoint-400000steps.pkl')
     vocoder = load_model(vocoder_path).to('cuda').eval()
     vocoder.remove_weight_norm()
     _ = vocoder.eval()
@@ -94,16 +99,21 @@ def load_vocoder(vocoder_path="../Models/Vocoder/checkpoint-400000steps.pkl"):
     return vocoder
 
 
-def load_starganv2(gan_path='../Models/StarGAN/epoch_00248.pth'):
+def load_starganv2():
     '''@lw
     return starGANv2
-    :gan_path: default = '../Models/StarGAN/epoch_00248.pth'
+    :gan_path: default = 'infer/Models/StarGAN/epoch_00248.pth'
     '''
 
     assert torch.cuda.is_available(), "CUDA is unavailable."
+    star_path = os.path.join(root_path, 'StarGAN')
+    config_path = os.path.join(star_path, 'config.yml')
+    gan_path = os.path.join(star_path, 'epoch_00248.pth')
 
-    with open('../Models/StarGAN/config.yml') as f:
+    with open(config_path) as f:
         starganv2_config = yaml.safe_load(f)
+
+    # gan_path = os.path.join(cwd, gan_path)
     starganv2 = build_model(model_params=starganv2_config["model_params"])
     params = torch.load(gan_path, map_location='cpu')
     params = params['model_ema']
