@@ -6,8 +6,8 @@ import torch
 import torchaudio
 import time
 
-from Models.JDC.model import JDCNet
-from .models import Generator, MappingNetwork, StyleEncoder
+from infer.Models.JDC.model import JDCNet
+from infer.models import Generator, MappingNetwork, StyleEncoder
 
 from parallel_wavegan.utils import load_model  # load vocoder
 
