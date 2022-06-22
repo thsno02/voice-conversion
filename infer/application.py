@@ -57,6 +57,8 @@ class Application:
 
     def start(self):
         self.flag.value = True
+        self.audio = np.zeros(
+        shape=(24000, 1))  # add zero-filled buffer to promote the performance
         self.p = Process(target=self.stream)
         self.p.start()
         start_time = time.time()
