@@ -348,7 +348,7 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
-Models/StarGAN/config.yml
-Models/StarGAN/epoch_00248.pth
+infer/Models/StarGAN/config.yml
+infer/Models/StarGAN/epoch_00248.pth
 Models/.DS_Store
 .DS_Store
