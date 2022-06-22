@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 
+import time
+
 import yaml
 from munch import Munch
 import torch
 import torchaudio
-import time
+from parallel_wavegan.utils import load_model  # load vocoder
 
 from infer.Models.JDC.model import JDCNet
 from infer.models import Generator, MappingNetwork, StyleEncoder
-
-from parallel_wavegan.utils import load_model  # load vocoder
 
 to_mel = torchaudio.transforms.MelSpectrogram(n_mels=80,
                                               n_fft=2048,
