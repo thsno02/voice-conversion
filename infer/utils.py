@@ -11,7 +11,6 @@ from parallel_wavegan.utils import load_model  # load vocoder
 
 from infer.Models.JDC.model import JDCNet
 from infer.models import Generator, MappingNetwork, StyleEncoder
-from infer.model import Model
 
 to_mel = torchaudio.transforms.MelSpectrogram(n_mels=80,
                                               n_fft=2048,
@@ -51,22 +50,6 @@ def build_model(model_params={}):
                      style_encoder=style_encoder)
 
     return nets_ema
-
-
-def compute_style(speaker_dicts):
-    reference_embeddings = {}
-    for key, (path, speaker) in speaker_dicts.items():
-        # @lw: only use mapping network
-        # @lw: speaker = idx of the speaker name
-        label = torch.LongTensor([key]).to('cuda')
-        latent_dim = model.starganv2.mapping_network.shared[0].in_features
-        # @lw: get the reference embedding from the mapping network
-        ref = model.starganv2.mapping_network(
-            torch.randn(1, latent_dim).to('cuda'), label)
-        reference_embeddings[key] = (ref, label)
-
-    return reference_embeddings
-
 
 def load_F0():
     ''' @lw
@@ -135,17 +118,13 @@ def load_starganv2():
 
 
 # speakers = build_speakers()
-speakers = {
-    0: 'Dong_Mingzhu',
-    1: 'Hua_Chunying',
-    2: 'Li_Fanping',
-    3: 'Li_Gan',
-    4: 'Luo_Xiang',
-    5: 'Ma_Yun',
-    6: 'Shi_Zhuguo',
-    7: 'Wang_Cheng',
-    8: 'Wang_Kun',
-    9: 'Zhao_Lijian'
-}
-
-model = Model()
+speakers = {'Dong_Mingzhu': 0,
+ '华春莹': 1,
+ 'Li_Fanping': 2,
+ 'Li_Gan': 3,
+ 'Luo_Xiang': 4,
+ 'Ma_Yun': 5,
+ '石柱国': 6,
+ 'Wang_Cheng': 7,
+ 'Wang_Kun': 8,
+ 'Zhao_Lijian': 9}

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from infer.utils import load_F0, load_vocoder, load_starganv2, speakers, preprocess, compute_style
+from infer.utils import load_F0, load_vocoder, load_starganv2, speakers, preprocess
 import torch
 
 class Singleton(type):
@@ -18,6 +18,20 @@ class Model(metaclass=Singleton):
         Model.vocoder = load_vocoder()
         Model.speakers = speakers
 
+    def compute_style(self, speaker_dicts):
+        reference_embeddings = {}
+        for key, (path, speaker) in speaker_dicts.items():
+            # @lw: only use mapping network
+            # @lw: speaker = idx of the speaker name
+            label = torch.LongTensor([key]).to('cuda')
+            latent_dim = self.starganv2.mapping_network.shared[0].in_features
+            # @lw: get the reference embedding from the mapping network
+            ref = self.starganv2.mapping_network(
+                torch.randn(1, latent_dim).to('cuda'), label)
+            reference_embeddings[key] = (ref, label)
+
+        return reference_embeddings
+
 
     def infer(self, audio, speaker):
         '''@lw
@@ -28,7 +42,7 @@ class Model(metaclass=Singleton):
         speaker_dicts = {speaker: ('', self.speakers[speaker])}
 
         # @lw: compute reference embeddings
-        reference_embeddings = compute_style(speaker_dicts)
+        reference_embeddings = self.compute_style(speaker_dicts)
 
         # conversion
         source = preprocess(audio).to('cuda:0')
