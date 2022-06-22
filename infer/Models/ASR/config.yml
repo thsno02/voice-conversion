@@ -1,4 +1,3 @@
-log_dir: "logs"
 save_freq: 20
 device: "cuda"
 epochs: 180
