@@ -38,7 +38,7 @@ def hello_world():
         app.stop()
         print('开始推理')
         app.infer()
-        print('结束推理')
+        print('结束推理\n')
         return {"status": 0, "message": "结束!"}
     else:
         return {"status": 1, "message": "action error!"}
