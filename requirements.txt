@@ -6,3 +6,4 @@ parallel_wavegan
 sounddevice==0.4.4
 flask
 flask_cors
+matplotlib
