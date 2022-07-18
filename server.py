@@ -1,12 +1,33 @@
 # !/usr/bin/env python
 
-from xmlrpc.client import FastMarshaller
+from multiprocessing import Process
+
 from flask import Flask
 from flask_cors import CORS
 from flask import request
 from flask import render_template
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 from infer.application import Application
+
+
+def draw_plot():
+    """
+    draw QR code
+    """
+    # hide toolbar
+    plt.rcParams['toolbar'] = 'None'
+    # enbable Chinese
+    plt.rcParams['font.sans-serif'] = ['SimHei']  #用来正常显示中文标签
+
+    img = mpimg.imread('qrcode.png')
+    imgplot = plt.imshow(img)
+    plt.axis('off')
+    plt.title('请扫码')
+    plt.ioff()
+    plt.show()
+
 
 serve = Flask(__name__)
 CORS(serve)
@@ -50,4 +71,7 @@ def index():
 
 
 if __name__ == '__main__':
+    # draw qr code
+    p = Process(target=draw_plot)
+    p.start()
     serve.run(host="0.0.0.0", port=8000)
