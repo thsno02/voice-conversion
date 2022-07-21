@@ -13,7 +13,7 @@ class Singleton(type):
 class Model(metaclass=Singleton):
     def __init__(self) -> None:
         super().__init__()
-        Model.starganv2 = load_starganv2()
+        Model.starganv2 = load_starganv2('epoch_00248.pth')
         Model.F0_model = load_F0()
         Model.vocoder = load_vocoder()
         Model.speakers = speakers

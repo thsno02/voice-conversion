@@ -83,7 +83,7 @@ def load_vocoder():
     return vocoder
 
 
-def load_starganv2():
+def load_starganv2(epoch):
     '''@lw
     return starGANv2
     :gan_path: default = 'infer/Models/StarGAN/epoch_00248.pth'
@@ -92,7 +92,7 @@ def load_starganv2():
     assert torch.cuda.is_available(), "CUDA is unavailable."
     star_path = os.path.join(root_path, 'StarGAN')
     config_path = os.path.join(star_path, 'config.yml')
-    gan_path = os.path.join(star_path, 'epoch_00248.pth')
+    gan_path = os.path.join(star_path, epoch)
 
     with open(config_path) as f:
         starganv2_config = yaml.safe_load(f)
