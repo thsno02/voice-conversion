@@ -1,7 +1,10 @@
 # !/usr/bin/env python
 
 from multiprocessing import Process
+import socket
 
+import pyqrcode
+from PIL import Image
 from flask import Flask
 from flask_cors import CORS
 from flask import request
@@ -13,20 +16,19 @@ from infer.application import Application
 
 
 def draw_plot():
-    """
-    draw QR code
-    """
-    # hide toolbar
-    plt.rcParams['toolbar'] = 'None'
-    # enbable Chinese
-    plt.rcParams['font.sans-serif'] = ['SimHei']  #用来正常显示中文标签
-
-    img = mpimg.imread('qrcode.png')
-    imgplot = plt.imshow(img)
-    plt.axis('off')
-    plt.title('请扫码')
-    plt.ioff()
-    plt.show()
+    ip = socket.gethostbyname_ex(socket.gethostname())[-1][1]
+    server_address = 'http://' + ip + ':8000'
+    url = pyqrcode.QRCode(server_address, error='H')
+    url.png('qr_code.png', scale=10)
+    im = Image.open('qr_code.png')
+    im = im.convert("RGBA")
+    logo = Image.open('logo.png')
+    box = (135, 135, 235, 235)
+    im.crop(box)
+    region = logo
+    region = region.resize((box[2] - box[0], box[3] - box[1]))
+    im.paste(region, box)
+    im.show()
 
 
 serve = Flask(__name__)
