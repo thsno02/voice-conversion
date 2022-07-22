@@ -352,3 +352,4 @@ infer/Models/StarGAN/config.yml
 infer/Models/StarGAN/epoch_00248.pth
 Models/.DS_Store
 .DS_Store
+infer/Models/StarGAN/epoch_00742.pth
