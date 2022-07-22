@@ -13,7 +13,12 @@ class Singleton(type):
 class Model(metaclass=Singleton):
     def __init__(self) -> None:
         super().__init__()
-        Model.starganv2 = load_starganv2('epoch_00248.pth')
+        # support Hua_Chunying and Shi_Zhuguo
+        Model.starganv2_1 = load_starganv2('epoch_00248.pth')
+        # support Zhao_Lijian
+        Model.starganv2_2 = load_starganv2('epoch_00742.pth')
+        # set the default as None
+        Model.starganv2 = None
         Model.F0_model = load_F0()
         Model.vocoder = load_vocoder()
         Model.speakers = speakers

@@ -11,7 +11,7 @@ from multiprocessing import Queue
 from multiprocessing import Value
 from threading import Thread
 
-from infer.utils import get_time_dif, load_starganv2
+from infer.utils import get_time_dif
 from infer.model import Model
 
 logging.basicConfig(filename='vc.log',
@@ -106,9 +106,11 @@ class Application:
             logging.info('\tThe target speaker is {}. {}'.format(
                 speaker, self.model.speakers[speaker]))
             if speaker == 9:
-                model.starganv2 = load_starganv2('epoch_00742.pth')
+                model.starganv2 = model.starganv2_2
+                print(f'{speaker}, id is {id(model.starganv2)}')
             else:
-                model.starganv2 = load_starganv2('epoch_00248.pth')
+                model.starganv2 = model.starganv2_1
+                print(f'{speaker}, id is {id(model.starganv2)}')
             return True
 
     def infer(self):
