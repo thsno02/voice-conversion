@@ -4,6 +4,17 @@
 <head>
     <meta charset="utf-8" />
     <style type="text/css">
+
+        .container {
+            text-align: center;
+            padding-top: 70px;
+        }
+        .head1, .button {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+
         .greenbtn {
             border: 1px solid #50b1fb;
             background-color: #6abcfc;
@@ -25,10 +36,10 @@
         button {
             margin: 0 12px;
             display: inline-block;
-            width: 150px;
-            height: 50px;
+            width: 300px;
+            height: 70px;
             line-height: 50px;
-            font-size: 14px;
+            font-size: 50px;
             border-radius: 3px;
             color: rgb(249, 249, 250);
             text-align: center;
@@ -42,7 +53,7 @@
             align-items: center;
             justify-content: center;
             margin: 0 auto;
-            height: 100vh;
+            height: 70vh;
             background-color: #f9fafa;
         }
 
@@ -62,24 +73,35 @@
         }
 
         select {
-            margin-bottom: 10px;
-            margin-top: 10px;
+            font-size: 50px;
+            margin-bottom: 0px;
+            margin-top: 0px;
             font-family: cursive, sans-serif;
             outline: 0;
             background: #50b1fb;
             color: #fff;
             border: 1px solid rgb(39, 231, 151);
-            padding: 4px;
-            border-radius: 9px;
-            width: 160px;
+            padding: 0px;
+            border-radius: 10px;
+            width: 300px;
+            height: 80px;
+            text-align: center;
         }
+
     </style>
+    <title>YISA</title> 
+
 </head>
 
-<body>
 
+<body>
+<div class="container">
+    
+    <h1 class="head1">语音转化项目<br>展示</h1>
+
+    <div class='select'>
     <form id="formID">
-        <label style="color:#50b1fb; font-weight: 500;"  for="lang">选择人员</label>
+        <label style="color:#50b1fb; font-weight: 500;font-size: 50px;"  for="lang">选择人员:</label>
         <select name="speaker" id="speakerID">
             <option value="1">华春莹</option>
             <option value="6">石柱国</option>
@@ -87,9 +109,18 @@
         </select>
         <!-- <input type="submit" value="Submit" />  -->
     </form>
+    </div>
 
+
+    <div class='button'>
+    <label style="color:#50b1fb; font-weight: 500;font-size: 50px;"  for="lang">运行状态:</label>
     <button class="greenbtn" id="play" onclick="state_switch()" style="display:block;margin:0,auto;">开始</button>
+    </div>
 
+
+    <p style="font-size: 20px;" >Copyright © 2022 Yisa</p>
+
+</div>
 </body>
 
 <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -170,6 +201,10 @@
             http_get("stop");
         }
     }
+
+    let fontSize = $("html").css("font-size"); //此fontsize有单位px，所以下方使用截取。
+    $("html").css("font-size",Number(fontSize.substr(0,fontSize.length-2))*4 + "px");//放大1.2倍
+
 </script>
 
 </html>
