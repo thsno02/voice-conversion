@@ -10,3 +10,4 @@ matplotlib
 pillow
 pyqrcode
 pypng
+six
