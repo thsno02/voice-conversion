@@ -36,11 +36,6 @@ def draw_plot():
 serve = Flask(__name__)
 CORS(serve)
 
-app = Application()
-print('Model has been initialized.')
-print(f'id is {id(app)}')
-
-
 @serve.route("/api/", methods=["GET"])
 def hello_world():
     action = request.args.get("action")
@@ -78,4 +73,7 @@ if __name__ == '__main__':
     # draw qr code
     p = Process(target=draw_plot)
     p.start()
+    app = Application()
+    print('Model has been initialized.')
+    print(f'id is {id(app)}')
     serve.run(host="0.0.0.0", port=8000)
