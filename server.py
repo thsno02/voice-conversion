@@ -17,7 +17,9 @@ from infer.application import Application
 
 def draw_plot():
     # find the server address
-    ip = socket.gethostbyname_ex(socket.gethostname())[-1][1]
+    for i in socket.gethostbyname_ex(socket.gethostname())[-1]:
+        if i.startswith('10.10'):
+            ip = i
     server_address = 'http://' + ip + ':8000'
     # draw qr code with highest error tolerance
     url = pyqrcode.QRCode(server_address, error='H')
