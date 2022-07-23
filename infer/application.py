@@ -2,8 +2,9 @@
 import logging
 import ctypes
 import queue
-import sounddevice as sd
 
+import librosa
+import sounddevice as sd
 import numpy as np
 import time
 from multiprocessing import Process
@@ -45,8 +46,7 @@ class Application:
         sd._initialize()
         sd.default.reset()
         # set input and output devices
-        sd.default.device = 1, 5
-        sd.default.samplerate = 24000  # set sample rate
+        sd.default.device = 1, 3
         sd.default.channels = 1, 2  # one input channel, two output channel
         logging.info('sounddevice has been initialized.')
 
@@ -58,8 +58,8 @@ class Application:
 
         def callback(in_data, frames, time, status):
             q.put(in_data.copy())
-            
-        with sd.InputStream(samplerate=24000,
+
+        with sd.InputStream(samplerate=44100,
                             device=sd.default.device[0],
                             dtype='float32',
                             channels=1,
@@ -73,7 +73,7 @@ class Application:
 
     def start(self):
         self.flag.value = True
-        self.audio = np.zeros(shape=(24000,
+        self.audio = np.zeros(shape=(44100,
                                      1))  # init the audio for a new start
         self.p = Thread(target=self.stream)
         self.p.start()
@@ -118,6 +118,10 @@ class Application:
         logging.info(self.audio.shape)
         self.audio = self.audio / np.max(np.abs(self.audio))
         self.audio = self.audio.flatten()  # flatten the 2D numpy array
+        # resample the audio
+        self.audio = librosa.resample(self.audio,
+                                      orig_sr=44100,
+                                      target_sr=24000)
         # convert audio to target speaker tone
         start_time = time.time()
         converted_audio = self.model.infer(self.audio, self.speaker)
