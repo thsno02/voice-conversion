@@ -1,5 +1,5 @@
 munch
-numpy
+numpy==1.22
 soundfile
 pyyaml
 parallel_wavegan
@@ -11,3 +11,6 @@ pillow
 pyqrcode
 pypng
 six
+librosa
+samplerate
+soxr
