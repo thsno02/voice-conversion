@@ -46,7 +46,7 @@ class Application:
         sd._initialize()
         sd.default.reset()
         # set input and output devices
-        sd.default.device = 1, 3
+        sd.default.device = '麦克风 (Realtek High Definition Au', '扬声器 (Realtek High Definition Au'
         sd.default.channels = 1, 2  # one input channel, two output channel
         logging.info('sounddevice has been initialized.')
 
@@ -118,6 +118,7 @@ class Application:
         logging.info(self.audio.shape)
         self.audio = self.audio / np.max(np.abs(self.audio))
         self.audio = self.audio.flatten()  # flatten the 2D numpy array
+        self.audio = np.append(self.audio, np.zeros(shape=(24000, 1)))
         # resample the audio
         self.audio = librosa.resample(self.audio,
                                       orig_sr=44100,
